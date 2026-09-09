@@ -1,0 +1,12 @@
+{
+  "headers": [
+    {
+      "source": "/socialbee-tutorial.pdf",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/socialbee.html",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ]
+}

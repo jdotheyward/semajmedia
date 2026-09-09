@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#16294A" />
+<meta name="robots" content="noindex, nofollow" />
+<title>SocialBee Console — SEMAJ Media</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --navy:#213E68; --navy-deep:#16294A; --ink:#14213A;
+  --coral:#D4562F; --coral-deep:#A63D1D;
+  --amber:#A8915E; --amber-deep:#7A6839;
+  --paper:#EEF1F5; --sheet:#FFF; --band:#F6F8FB;
+  --rule:#D3DAE4; --rule-soft:#E7ECF2;
+  --muted:#5F6C80; --faint:#8C97A6;
+  --good:#2F6B4F; --good-bg:#EDF3EF;
+  --warn:#A63D1D; --warn-bg:#FCF0EB;
+  --display:"Bebas Neue","Arial Narrow",sans-serif;
+  --body:"Source Serif 4",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font:inherit}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.wrap{max-width:1080px;margin:0 auto}
+
+/* ── Masthead ─────────────────────────────────────────── */
+.mast{background:var(--navy);color:#fff;border-bottom:4px solid var(--coral)}
+.mast-in{padding:34px 32px 30px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--amber)}
+h1{font-family:var(--display);font-size:clamp(34px,6vw,58px);line-height:.94;letter-spacing:.015em;margin:12px 0 0;max-width:20ch}
+.lede{font-size:16px;line-height:1.6;color:rgba(255,255,255,.76);max-width:64ch;margin-top:14px}
+
+/* ── Section nav ──────────────────────────────────────── */
+.nav{background:var(--sheet);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:20}
+.nav-in{display:flex;overflow-x:auto;padding:0 32px;gap:2px}
+.nav button{font-family:var(--mono);font-size:12px;color:var(--muted);padding:14px 13px 12px;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s}
+.nav button:hover{color:var(--ink)}
+.nav button[aria-current="true"]{color:var(--navy);border-bottom-color:var(--coral)}
+
+/* ── Blocks ───────────────────────────────────────────── */
+main{padding:30px 32px 70px}
+section{margin-bottom:34px;scroll-margin-top:60px}
+.panel{background:var(--sheet);border:1px solid var(--rule)}
+.panel-head{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);padding:13px 20px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.panel-body{padding:22px 20px}
+h2{font-family:var(--display);font-size:32px;line-height:1;letter-spacing:.02em;margin-bottom:6px}
+.section-note{font-size:15px;line-height:1.6;color:var(--muted);max-width:70ch;margin-bottom:16px}
+h3{font-family:var(--display);font-size:24px;line-height:1.05;letter-spacing:.02em;margin-bottom:10px}
+
+/* ── Calculator ───────────────────────────────────────── */
+.calc{display:grid;grid-template-columns:minmax(260px,320px) 1fr;gap:32px}
+.field{margin-bottom:15px}
+.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;font-family:var(--mono);font-size:15px;padding:9px 11px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink)}
+.field textarea{font-family:var(--body);font-size:15px;line-height:1.55;min-height:120px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy);outline:none;box-shadow:0 0 0 3px rgba(33,62,104,.12)}
+.hint{font-size:13px;color:var(--faint);line-height:1.45;margin-top:5px}
+
+.verdict{border:1px solid var(--rule);border-left:5px solid var(--amber);padding:20px;background:var(--band)}
+.verdict[data-band="thin"]{border-left-color:var(--coral);background:var(--warn-bg)}
+.verdict[data-band="ideal"],.verdict[data-band="healthy"]{border-left-color:var(--good);background:var(--good-bg)}
+.verdict-label{font-family:var(--display);font-size:30px;line-height:1;letter-spacing:.02em}
+.verdict-say{font-size:15px;line-height:1.6;color:var(--muted);margin-top:8px;max-width:52ch}
+
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid var(--rule)}
+.readout dt{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--faint);margin-bottom:5px}
+.readout dd{font-family:var(--mono);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.05}
+.readout dd small{font-size:12px;font-weight:400;color:var(--faint);display:block;margin-top:3px;font-family:var(--mono)}
+
+/* ── Schedule grid ────────────────────────────────────── */
+.grid-scroll{overflow-x:auto}
+table.sched{border-collapse:collapse;width:100%;min-width:720px}
+.sched th,.sched td{border:1px solid var(--rule-soft);padding:0;vertical-align:top}
+.sched thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--faint);font-weight:400;padding:9px 8px;background:var(--band);text-align:center}
+.sched tbody th{font-family:var(--mono);font-size:11px;color:var(--ink);font-weight:400;text-align:left;padding:11px 12px;width:150px;background:var(--band)}
+.sched tbody th small{display:block;color:var(--faint);font-size:10px;margin-top:3px}
+.slot{display:block;padding:7px 8px;font-family:var(--mono);font-size:10px;line-height:1.35;color:#fff;min-height:46px}
+.slot b{display:block;font-size:9px;opacity:.72;font-weight:400;margin-bottom:2px}
+.slot.camp{background:var(--sheet)!important;color:var(--coral-deep);border:1.5px dashed var(--coral);margin:3px;min-height:40px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule-soft)}
+.legend span{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.swatch{width:13px;height:13px;flex:none}
+.swatch.dash{background:var(--sheet);border:1.5px dashed var(--coral)}
+
+.toggle{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer}
+.toggle input{width:16px;height:16px;accent-color:var(--coral);cursor:pointer}
+
+/* ── Checklists ───────────────────────────────────────── */
+.check{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;width:100%;text-align:left;padding:12px 18px;border-top:1px solid var(--rule-soft);transition:background .12s}
+.check:first-of-type{border-top:none}
+.check:nth-child(even){background:var(--band)}
+.check:hover{background:#EDF2F8}
+.check[data-done="true"]{background:var(--good-bg)}
+.tick{width:17px;height:17px;border:1.5px solid var(--rule);background:var(--sheet);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;margin-top:2px}
+.check[data-done="true"] .tick{background:var(--good);border-color:var(--good)}
+.check-main{font-size:14.5px;line-height:1.5;max-width:76ch}
+.check[data-done="true"] .check-main{color:var(--muted);text-decoration:line-through}
+.check-sub{display:block;font-size:13px;color:var(--faint);margin-top:3px;text-decoration:none;line-height:1.45}
+.tag{font-family:var(--mono);font-size:10px;padding:3px 8px;border:1px solid;white-space:nowrap;align-self:center}
+.tag.ever{color:var(--good);border-color:#B6CFC0;background:var(--good-bg)}
+.tag.once{color:var(--coral-deep);border-color:#E8B9A8;background:var(--warn-bg)}
+
+/* ── Caption adapter ──────────────────────────────────── */
+.out{border:1px solid var(--rule);border-top:none}
+.out:first-of-type{border-top:1px solid var(--rule)}
+.out-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 14px;background:var(--band);border-bottom:1px solid var(--rule-soft);flex-wrap:wrap}
+.out-name{font-family:var(--mono);font-size:11px;color:var(--navy)}
+.out-meta{font-family:var(--mono);font-size:10px;color:var(--faint)}
+.out-meta.over{color:var(--coral-deep)}
+.out-body{padding:13px 14px;font-size:14.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.out-flag{font-size:12.5px;color:var(--amber-deep);padding:0 14px 12px;line-height:1.5}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.05em;padding:10px 18px;border:1px solid var(--navy);background:var(--navy);color:#fff;transition:.15s}
+.btn:hover{background:var(--navy-deep)}
+.btn-quiet{background:transparent;color:var(--muted);border-color:var(--rule)}
+.btn-quiet:hover{background:var(--band);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* ── Reference accordion ──────────────────────────────── */
+.ref-item{border-top:1px solid var(--rule-soft)}
+.ref-item:first-child{border-top:none}
+.ref-btn{width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 20px;transition:background .12s}
+.ref-btn:hover{background:var(--band)}
+.ref-btn h3{margin:0;font-size:21px}
+.ref-btn .caret{font-family:var(--mono);font-size:11px;color:var(--faint);flex:none}
+.ref-body{padding:2px 20px 24px;max-width:70ch}
+.ref-body p{font-size:15px;line-height:1.68;margin:0 0 12px}
+.ref-body .sub{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--coral-deep);margin:24px 0 9px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.ref-body .ind{padding-left:18px;border-left:2px solid var(--rule);color:var(--muted);margin-bottom:3px}
+.ref-body .strong{font-weight:600}
+
+footer{padding:26px 32px 44px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--faint)}
+
+@media(max-width:860px){
+  .mast-in{padding:26px 18px 24px}
+  .nav-in{padding:0 18px}
+  main{padding:24px 18px 56px}
+  footer{padding:22px 18px 36px}
+  .calc{grid-template-columns:1fr;gap:22px}
+  .check{grid-template-columns:30px 1fr;padding:12px 14px}
+  .tag{grid-column:2;justify-self:start;margin-top:4px}
+  .panel-body{padding:18px 15px}
+  .ref-body{padding:2px 15px 20px}
+}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap mast-in">
+    <div class="eyebrow">SEMAJ Media — internal</div>
+    <h1>The SocialBee console</h1>
+    <p class="lede">Everything about how your evergreen loop is set up, plus the math to tell you
+    whether your library is actually big enough to run it. Nothing here posts anything — it works out
+    what to do, then you do it in SocialBee.</p>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap nav-in" id="nav"></div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ── LIBRARY HEALTH ────────────────────────────────── -->
+  <section id="health">
+    <h2>Is the library big enough?</h2>
+    <p class="section-note">The rule of thumb in your guide is 30 posts minimum, 60 ideal. But that
+    assumed one post a day. What actually matters is the gap between a post appearing and that same
+    post coming back round — and that depends on how many slots you've pointed at the category.
+    Work it out per category.</p>
+
+    <div class="panel">
+      <div class="panel-head"><span>Recycle gap calculator</span></div>
+      <div class="panel-body calc">
+        <div>
+          <div class="field">
+            <label for="c-cat">Category</label>
+            <select id="c-cat">
+              <option>Heyward CPA — Evergreen</option>
+              <option>BYOBookkeeper — Evergreen</option>
+              <option>Financial Flipside — Evergreen</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-posts">Posts in the category</label>
+            <input id="c-posts" type="number" min="1" max="2000" value="30" />
+          </div>
+          <div class="field">
+            <label for="c-vars">Variations per post</label>
+            <input id="c-vars" type="number" min="1" max="10" value="1" />
+            <p class="hint">Each variation publishes on a different cycle, so 30 posts with 3
+            variations behaves like 90 before anyone sees a repeat word for word.</p>
+          </div>
+          <div class="field">
+            <label for="c-slots">Slots per week pointed at it</label>
+            <input id="c-slots" type="number" min="1" max="70" value="7" />
+            <p class="hint">Count every slot across every platform. Your schedule below shows the
+            live number.</p>
+          </div>
+          <div class="field">
+            <label for="c-target">Gap you want, in weeks</label>
+            <input id="c-target" type="number" min="1" max="52" value="8" />
+          </div>
+        </div>
+
+        <div>
+          <div class="verdict" id="verdict">
+            <div class="verdict-label" id="v-label"></div>
+            <p class="verdict-say" id="v-say"></p>
+            <dl class="readout" id="v-readout"></dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCHEDULE ──────────────────────────────────────── -->
+  <section id="schedule">
+    <h2>The week, as scheduled</h2>
+    <p class="section-note">Your recommended schedule, drawn out. Every filled cell is a slot that
+    pulls the next post from that category automatically. Turn on a campaign to see the point of the
+    whole system: campaign posts sit in their own slots on top of the evergreen loop, they don't
+    take its place.</p>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span>Posting schedule</span>
+        <label class="toggle"><input type="checkbox" id="camp-on" /> Marblism campaign running</label>
+      </div>
+      <div class="panel-body">
+        <div class="grid-scroll"><table class="sched" id="sched"></table></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SETUP ─────────────────────────────────────────── -->
+  <section id="setup">
+    <h2>Build it once</h2>
+    <p class="section-note">The six categories, in the order worth creating them. The re-queue
+    setting is the only thing that separates an evergreen category from a campaign one, and getting
+    it wrong is the single most expensive mistake here — a campaign set to re-queue will replay a
+    finished promotion forever, out of order.</p>
+    <div class="panel"><div id="setup-list"></div></div>
+  </section>
+
+  <!-- ── CAMPAIGN ──────────────────────────────────────── -->
+  <section id="campaign">
+    <h2>Launching a campaign</h2>
+    <p class="section-note">The run-through for dropping a Marblism batch in. Reset it when the next
+    campaign comes round.</p>
+    <div class="panel">
+      <div class="panel-head">
+        <span>Campaign launch</span>
+        <button class="btn btn-quiet" id="camp-reset">Start a new campaign</button>
+      </div>
+      <div id="camp-list"></div>
+    </div>
+  </section>
+
+  <!-- ── CSV ───────────────────────────────────────────── -->
+  <section id="csv">
+    <h2>Bulk import template</h2>
+    <p class="section-note">SocialBee's importer wants six specific columns, and the first row must
+    not be edited. Note what isn't here: there is no platform or category column. You choose the
+    profiles and the destination category in the import screen, not in the file. Dates must be
+    <code>yyyy-mm-ddThh:mm:ssZ</code> on a 24-hour clock, and any date already in the past will fail
+    rather than publish.</p>
+
+    <div class="panel">
+      <div class="panel-head"><span>Generate a CSV</span></div>
+      <div class="panel-body">
+        <div class="calc">
+          <div>
+            <div class="field">
+              <label for="csv-start">First post date</label>
+              <input id="csv-start" type="date" />
+            </div>
+            <div class="field">
+              <label for="csv-time">Time (24-hour)</label>
+              <input id="csv-time" type="time" value="12:00" />
+            </div>
+            <div class="field">
+              <label for="csv-rows">Posts in the batch</label>
+              <input id="csv-rows" type="number" min="1" max="300" value="10" />
+              <p class="hint">One post per day from the start date. SocialBee caps an
+              import at 300.</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="csv-dl">Download CSV</button>
+            </div>
+          </div>
+          <div>
+            <p class="hint" style="margin-top:0">Fill only one media column per row. The
+            <b>link</b> column overwrites imageUrls, gifUrls and videoUrls without warning, and
+            filling two media columns silently drops one. Keep each caption inside its quotes so a
+            comma doesn't shift the row.</p>
+            <div class="out" style="margin-top:12px">
+              <div class="out-head"><span class="out-name">Preview</span></div>
+              <div class="out-body" id="csv-prev" style="font-family:var(--mono);font-size:11.5px;line-height:1.7"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CAPTION ───────────────────────────────────────── -->
+  <section id="caption">
+    <h2>One caption, four platforms</h2>
+    <p class="section-note">Paste a caption and see what each platform version should be, with your
+    rules already applied — links stripped for Instagram, hashtag counts trimmed per platform,
+    character counts checked. Copy the version you need into the matching platform tab in SocialBee.</p>
+
+    <div class="panel">
+      <div class="panel-head"><span>Caption adapter</span></div>
+      <div class="panel-body">
+        <div class="field">
+          <label for="cap-in">Your caption</label>
+          <textarea id="cap-in" placeholder="Paste the caption here, links and hashtags included."></textarea>
+        </div>
+        <div id="cap-out"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── REFERENCE ─────────────────────────────────────── -->
+  <section id="reference">
+    <h2>Reference</h2>
+    <p class="section-note">The full written guide, unchanged. Open what you need.</p>
+    <div class="panel"><div id="ref-list"></div></div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  SocialBee console — SEMAJ Media, Heyward Management Group<br />
+  Progress is saved in this browser only. Nothing is sent anywhere.
+</footer>
+
+<script>
+/* ═══ Reference content (verbatim from the original guide) ═══ */
+const REFERENCE = [
+  {
+    id: "overview",
+    label: "Overview",
+    title: "How SocialBee Works for SEMAJ Media",
+    color: "var(--amber)",
+    content: `SocialBee is built around one core idea: organize content into categories, assign each category a posting schedule, and let the platform run continuously.
+
+The two post types that matter for your setup:
+
+EVERGREEN — Posts that recycle automatically. SocialBee publishes the post, then moves it to the back of the queue. When the queue completes a full cycle, it starts again from the top. These run forever until you pause or delete them.
+
+SHARE ONCE — Posts that fire once and expire. Marblism.ai campaign content, time-sensitive promotions, workshop announcements, and anything with a specific date goes here.
+
+The system that works for you: Evergreen categories run continuously as your always-on baseline. Share Once posts from Marblism.ai campaigns layer on top without disturbing the evergreen loop.`
+  },
+  {
+    id: "categories",
+    label: "Categories",
+    title: "Setting Up Your Content Categories",
+    color: "var(--navy)",
+    content: `Categories are the foundation. Every post lives inside one. Each category gets its own posting schedule and its own evergreen or share-once setting.
+
+BUILD THESE CATEGORIES FIRST:
+
+Heyward CPA — Evergreen
+Tax tips, financial literacy, business finance insights. The backbone of the Heyward CPA social presence. Posts recycle continuously.
+
+BYOBookkeeper — Evergreen
+Bookkeeping education, BYOB philosophy, service positioning. Recycles continuously.
+
+Financial Flipside — Evergreen
+Newsletter content, financial mindset posts, money culture. Recycles continuously.
+
+HCPA Live — Share Once
+Episode announcements, show promos, post-show recaps. Fires once per post — never repeats.
+
+Marblism Campaigns — Share Once
+Content generated by Marblism.ai for specific campaigns. Fires once per post. Never set these to evergreen — campaigns have a message arc that should not repeat out of context.
+
+Promotional — Share Once
+Workshop announcements, consultation CTAs, time-sensitive offers. Fires once.
+
+HOW TO CREATE A CATEGORY:
+1. Go to Content Categories in the left sidebar
+2. Click Create Category
+3. Name it (e.g. Heyward CPA — Evergreen)
+4. Click Default Settings
+5. Toggle Re-queue after posting ON for evergreen categories, OFF for share-once
+6. Click Save`
+  },
+  {
+    id: "evergreen",
+    label: "Evergreen Loop",
+    title: "Building the Evergreen Recycling Loop",
+    color: "var(--good)",
+    content: `This is the core of what you want: continuous posting that requires no ongoing manual work.
+
+HOW THE LOOP WORKS:
+SocialBee publishes Post 1 from a category → moves it to the back of the queue → publishes Post 2 → ... → publishes the last post → jumps back to Post 1 and starts again. The loop never stops unless you pause it.
+
+SETTING UP AN EVERGREEN CATEGORY:
+1. Create a category and enable Re-queue after posting in Default Settings
+2. Add posts to the category (see Adding Posts section)
+3. Each post will automatically re-queue after publishing
+4. The category runs indefinitely
+
+MINIMUM CONTENT FOR A HEALTHY LOOP:
+With a daily posting schedule, you need enough posts so the same content doesn't repeat too frequently. Rule of thumb: at minimum 30 posts per evergreen category before activating. At 30 posts posting once daily, each post recycles roughly once per month — acceptable. At 60 posts, once every two months — ideal.
+
+POST VARIATIONS — the key to keeping evergreen content fresh:
+Each evergreen post can have multiple variations. SocialBee publishes one variation per cycle. So one "topic" can have 3-4 different versions of the caption or image, and the audience sees something different each time it recycles.
+
+To add variations:
+1. Open any post in the editor
+2. Click Add Variation at the bottom
+3. Write a different version of the caption (same topic, different angle or wording)
+4. Add a different image if desired
+5. Save
+
+In Cycle 1: Variation 1 publishes
+In Cycle 2: Variation 2 publishes
+In Cycle 3: Variation 3 publishes
+Then back to Variation 1
+
+This is how 30 posts with 3 variations each becomes effectively 90 unique posts — without writing 90 posts.
+
+IMPORTANT — Post order in evergreen categories:
+New posts added to an evergreen category go to the TOP of the queue by default (newest first). This means fresh content publishes first and older posts gradually cycle back in. If you want to post in a specific order, change the category to FIFO (oldest first) in settings.`
+  },
+  {
+    id: "marblism",
+    label: "Marblism Campaigns",
+    title: "How Marblism.ai Campaigns Fit In",
+    color: "var(--coral)",
+    content: `Marblism.ai generates campaign-specific content — posts with a defined message arc, a goal, and a sequence. These should NEVER go into an evergreen category because campaign posts are designed to build on each other in order. Recycling them out of context breaks the arc and confuses the audience.
+
+THE RIGHT SETUP FOR MARBLISM CONTENT:
+
+Use a dedicated Share Once category for each campaign. Name it clearly:
+  — Marblism | BYOB Workshop April 2026
+  — Marblism | Financial Flipside Launch
+  — Marblism | Tax Strategy Q2 2026
+
+Each campaign gets its own category. When the campaign is done, pause or archive the category — it doesn't affect any other queue.
+
+HOW TO IMPORT MARBLISM CONTENT INTO SOCIALBEE:
+
+Option 1 — Manual paste (for small campaigns):
+1. Copy each post from Marblism.ai
+2. Add post in SocialBee → paste caption → attach image if provided
+3. Set to Share Once
+4. Schedule at specific date/time OR add to queue bottom
+5. Repeat for each post in the campaign
+
+Option 2 — CSV bulk import (for large campaigns):
+1. Export your Marblism campaign posts to a spreadsheet
+2. Format as CSV: columns for date, time, caption, image URL, platform
+3. In SocialBee go to Content Categories → your campaign category
+4. Click Import → CSV
+5. Upload the file — all posts import at once with their schedule
+
+Option 3 — RSS or Zapier (for automated handoff):
+If Marblism.ai supports RSS output or Zapier integration, you can connect it directly to SocialBee so approved campaign posts flow in automatically.
+
+CAMPAIGN SCHEDULING STRATEGY:
+Do not let Marblism campaign posts compete with evergreen posts on the same time slot. Set campaign post times to DIFFERENT slots than your evergreen schedule. The evergreen loop fills the baseline. Campaign posts run in addition — not instead of.
+
+EXAMPLE: Evergreen posts at 9am and 3pm. Campaign posts at 12pm and 6pm. The audience gets 4 posts per day — 2 from the always-on evergreen loop, 2 from the active campaign.`
+  },
+  {
+    id: "schedule",
+    label: "Schedule Setup",
+    title: "Building Your Posting Schedule",
+    color: "var(--ink)",
+    content: `The schedule tells SocialBee when to pull from each category. Each time slot is assigned to one specific category. Multiple time slots can pull from the same category.
+
+HOW TO SET UP A SCHEDULE:
+1. Go to Schedule Setup in the left sidebar
+2. Select a social media profile (e.g. LinkedIn Personal — James)
+3. Click a time slot on the calendar grid
+4. Select which category to pull from at that time
+5. Repeat for each day and time you want to post
+
+RECOMMENDED SCHEDULE FOR SEMAJ MEDIA:
+
+LinkedIn Personal (James) — 5x per week
+  Mon 8am → Heyward CPA Evergreen
+  Tue 8am → Financial Flipside Evergreen
+  Wed 8am → Heyward CPA Evergreen
+  Thu 8am → BYOBookkeeper Evergreen
+  Fri 8am → Heyward CPA Evergreen
+  [Campaign posts: 12pm slots when a Marblism campaign is active]
+
+Facebook Page (Heyward CPA) — 4x per week
+  Mon 10am → Heyward CPA Evergreen
+  Wed 10am → BYOBookkeeper Evergreen
+  Thu 10am → HCPA Live (show week) or Heyward CPA Evergreen
+  Sat 10am → Heyward CPA Evergreen
+
+Instagram — 4x per week
+  Tue 11am → Heyward CPA Evergreen
+  Thu 11am → BYOBookkeeper Evergreen
+  Sat 11am → Financial Flipside Evergreen
+  Sun 11am → Heyward CPA Evergreen
+
+X (Twitter) — 5x per week
+  Daily 9am → rotate between Heyward CPA, Flipside, BYOBookkeeper evergreen
+
+IMPORTANT RULE: Each time slot pulls the NEXT post in that category's queue. So if the Monday 8am LinkedIn slot is assigned to Heyward CPA Evergreen, it will always publish the next post in that category's queue — automatically, continuously, without any action from you.`
+  },
+  {
+    id: "adding",
+    label: "Adding Posts",
+    title: "Adding Posts to SocialBee",
+    color: "var(--amber)",
+    content: `Four ways to get content into SocialBee. Use all four depending on the content type.
+
+METHOD 1 — Add Post (manual, one at a time):
+Best for: individual posts, custom content, anything that needs specific attention
+1. Click Add Post in the top bar or left sidebar
+2. Select which social profiles this post goes to
+3. Write the caption (or paste from Marblism or Claude)
+4. Attach image or video
+5. Customize per platform using the platform tabs — LinkedIn caption can be different from Instagram
+6. Select the content category
+7. Set to Re-queue (evergreen) or Share Once
+8. Set posting time: Now, Specific Time, Add to Queue Top, or Add to Queue Bottom
+9. Click Save as Approved
+
+METHOD 2 — Bulk import via CSV:
+Best for: Marblism campaign batches, large content loads
+Format: date, time, caption, image URL, platform, category
+Import via Content Categories → Import → CSV
+
+METHOD 3 — RSS feed import:
+Best for: auto-importing blog posts from heywardcpa.com or Financial Flipside
+1. Get the RSS URL from your WordPress blog or Substack
+2. In SocialBee go to Import → RSS
+3. Paste the RSS URL
+4. Choose which category new posts go to
+5. SocialBee auto-creates posts whenever a new article publishes
+
+METHOD 4 — Bulk edit across a category:
+Best for: updating CTAs, links, or hashtags across multiple posts at once
+1. Go to the Content Category
+2. Select multiple posts using the checkboxes
+3. Click Bulk Edit
+4. Update what you need across all selected posts simultaneously
+
+PLATFORM CUSTOMIZATION (critical for Instagram):
+Instagram does not allow links in captions. LinkedIn does. Facebook does. When adding a post, use the per-platform tabs to:
+  — Remove the link from the Instagram version, add "Link in bio" instead
+  — Keep the full link in LinkedIn and Facebook versions
+  — Adjust hashtag volume (Instagram: 5-10 tags, LinkedIn: 2-3, X: 1-2)`
+  },
+  {
+    id: "workflow",
+    label: "Workflow",
+    title: "The Weekly Workflow with Marblism Running",
+    color: "var(--good)",
+    content: `This is the actual week-to-week operating procedure once everything is set up.
+
+THE BASELINE (ongoing, no weekly action required):
+Your evergreen categories run continuously. SocialBee posts from them automatically every day according to your schedule. You do nothing. The loop handles it.
+
+WHEN A MARBLISM CAMPAIGN IS ACTIVE:
+Week before campaign launches:
+  1. Export Marblism campaign posts
+  2. Create a new Share Once category for the campaign
+  3. Import posts (CSV or manual)
+  4. Assign campaign posts to 12pm slots (or your chosen campaign time)
+  5. Approve all posts in the category
+  6. Done — campaign runs automatically on schedule
+
+During the campaign:
+  — Evergreen posts continue at their normal times
+  — Campaign posts fire at their campaign times
+  — No daily management needed
+
+After the campaign ends:
+  1. Go to the campaign category
+  2. Pause or archive it
+  3. Evergreen loop continues unaffected
+
+WHEN A NEW SHOW EPISODE PUBLISHES (Heyward CPA Live):
+1. Add the episode promo post to HCPA Live — Share Once category
+2. Set posting time to the day before or day of the episode
+3. Add 2-3 clip posts after the episode (set to specific dates)
+4. These fire once and expire — the evergreen loop continues around them
+
+MONTHLY MAINTENANCE (30 minutes):
+  — Review which evergreen posts are recycling most
+  — Add 5-10 new evergreen posts to keep the library fresh
+  — Check that no expired posts are creating gaps in the queue
+  — Review analytics: which categories and posts drive the most engagement
+
+CONTENT FROM CLAUDE TO SOCIALBEE:
+When Claude generates social posts (like the BYOB workshop posts), the workflow is:
+  1. Copy the post from Claude
+  2. Open SocialBee Add Post
+  3. Paste into the caption field
+  4. Select profiles, customize per platform
+  5. Assign to the right category (evergreen or campaign)
+  6. Save as Approved`
+  },
+  {
+    id: "analytics",
+    label: "Analytics",
+    title: "Tracking What Works",
+    color: "var(--navy)",
+    content: `SocialBee's analytics show you what's landing so you can load more of it into the evergreen loop.
+
+WHERE TO FIND IT:
+Left sidebar → Analyze → choose a profile or overview
+
+KEY METRICS TO WATCH:
+Post Performance — which individual posts get the most engagement
+Category Performance — which category drives the most reach and clicks
+Best Time to Post — when your audience is most active (use this to adjust your schedule)
+Profile Growth — follower change over time per platform
+
+THE EVERGREEN ADVANTAGE IN ANALYTICS:
+Because posts recycle, you can see cumulative engagement across multiple cycles of the same post. A post with 50 likes in cycle 1 and 60 likes in cycle 2 is performing better over time — keep it. A post with 50 likes in cycle 1 and 10 likes in cycle 2 — retire it and replace with something stronger.
+
+WHAT TO DO WITH THE DATA:
+High performing evergreen post → add 2 more variations to it so it stays in rotation longer with fresh angles
+Low performing evergreen post → either add a variation with a different approach, or expire and replace
+High performing category → add more posts to it
+Campaign post outperforming evergreen → consider pulling that topic into the evergreen rotation as a standalone post
+
+SOCIALBEE + MARBLISM FEEDBACK LOOP:
+When you see which types of Marblism campaign posts perform well in SocialBee analytics, feed that back to Marblism as context for the next campaign. "Posts that lead with a pain point question outperform posts that lead with a solution statement" — that's campaign intelligence that makes the next Marblism output better.`
+  }
+];
+
+/* ═══ Storage ═══ */
+const KEY = "socialbee-console-v1";
+const store = {
+  read(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch{ return {}; } },
+  write(v){ try{ localStorage.setItem(KEY, JSON.stringify(v)); return true; }catch{ return false; } }
+};
+let state = store.read();
+const save = () => store.write(state);
+
+/* ═══ Categories ═══ */
+const CATS = {
+  hcpa: { name:"Heyward CPA",       color:"#213E68" },
+  byob: { name:"BYOBookkeeper",     color:"#A8915E" },
+  flip: { name:"Financial Flipside",color:"#D4562F" },
+  live: { name:"HCPA Live",         color:"#2F6B4F" }
+};
+
+/* ═══ Schedule ═══ */
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const ROWS = [
+  { label:"LinkedIn", sub:"Personal — James", slots:{ Mon:["8am","hcpa"],Tue:["8am","flip"],Wed:["8am","hcpa"],Thu:["8am","byob"],Fri:["8am","hcpa"] }, camp:["Mon","Wed","Fri"] },
+  { label:"Facebook", sub:"Heyward CPA page", slots:{ Mon:["10am","hcpa"],Wed:["10am","byob"],Thu:["10am","live"],Sat:["10am","hcpa"] }, camp:["Tue","Thu"] },
+  { label:"Instagram", sub:"", slots:{ Tue:["11am","hcpa"],Thu:["11am","byob"],Sat:["11am","flip"],Sun:["11am","hcpa"] }, camp:["Wed","Fri"] },
+  { label:"X", sub:"Rotating", slots:{ Mon:["9am","hcpa"],Tue:["9am","flip"],Wed:["9am","byob"],Thu:["9am","hcpa"],Fri:["9am","flip"] }, camp:[] }
+];
+
+function drawSchedule(){
+  const on = document.getElementById("camp-on").checked;
+  let h = "<thead><tr><th></th>" + DAYS.map(d=>`<th>${d}</th>`).join("") + "</tr></thead><tbody>";
+  ROWS.forEach(r=>{
+    h += `<tr><th>${r.label}${r.sub?`<small>${r.sub}</small>`:""}</th>`;
+    DAYS.forEach(d=>{
+      const s = r.slots[d];
+      let cell = "";
+      if(s){
+        const c = CATS[s[1]];
+        cell += `<span class="slot" style="background:${c.color}"><b>${s[0]}</b>${c.name}</span>`;
+      }
+      if(on && r.camp.includes(d)){
+        cell += `<span class="slot camp"><b>12pm</b>Campaign</span>`;
+      }
+      h += `<td>${cell}</td>`;
+    });
+    h += "</tr>";
+  });
+  document.getElementById("sched").innerHTML = h + "</tbody>";
+
+  const ever = ROWS.reduce((a,r)=>a+Object.keys(r.slots).length,0);
+  const camp = on ? ROWS.reduce((a,r)=>a+r.camp.length,0) : 0;
+  let lg = Object.values(CATS).map(c=>`<span><i class="swatch" style="background:${c.color}"></i>${c.name}</span>`).join("");
+  if(on) lg += `<span><i class="swatch dash"></i>Campaign — layered on top</span>`;
+  lg += `<span style="margin-left:auto;color:var(--ink)">${ever} evergreen${camp?` + ${camp} campaign`:""} = ${ever+camp} posts/week</span>`;
+  document.getElementById("legend").innerHTML = lg;
+}
+
+/* Live slot count per category, used by the calculator */
+function slotsFor(catName){
+  const key = Object.keys(CATS).find(k=>catName.startsWith(CATS[k].name));
+  if(!key) return 0;
+  return ROWS.reduce((a,r)=>a+Object.values(r.slots).filter(s=>s[1]===key).length,0);
+}
+
+/* ═══ Recycle gap calculator ═══ */
+const BANDS = [
+  { max:3,        band:"thin",    label:"Too thin",  say:"Posts come round again fast enough that the same followers will notice. Add to the library before you switch this category on." },
+  { max:6,        band:"ok",      label:"Workable",  say:"Acceptable, but it's the floor rather than the goal. Adding variations is the cheapest way to stretch the gap." },
+  { max:9,        band:"healthy", label:"Healthy",   say:"Comfortable. A repeat at this spacing reads as a reminder rather than a rerun." },
+  { max:Infinity, band:"ideal",   label:"Ideal",     say:"Roughly two months or more between repeats. This category can run untouched." }
+];
+
+function calc(){
+  const posts  = Math.max(1, +document.getElementById("c-posts").value || 1);
+  const vars   = Math.max(1, +document.getElementById("c-vars").value  || 1);
+  const slots  = Math.max(1, +document.getElementById("c-slots").value || 1);
+  const target = Math.max(1, +document.getElementById("c-target").value|| 1);
+
+  const topicGap = posts / slots;              // weeks until a topic returns
+  const exactGap = (posts * vars) / slots;     // weeks until the same wording returns
+  const b = BANDS.find(x => topicGap < x.max);
+  const needPosts = Math.max(0, Math.ceil(target * slots) - posts);
+  const needVars  = topicGap > 0 ? Math.max(1, Math.ceil(target / topicGap)) : 1;
+
+  document.getElementById("verdict").dataset.band = b.band;
+  document.getElementById("v-label").textContent  = b.label;
+  document.getElementById("v-say").textContent    = b.say;
+
+  const wk = n => n.toFixed(1).replace(/\.0$/,"");
+  document.getElementById("v-readout").innerHTML = `
+    <div><dt>Topic returns every</dt><dd>${wk(topicGap)}<small>weeks</small></dd></div>
+    <div><dt>Exact wording returns every</dt><dd>${wk(exactGap)}<small>weeks, with ${vars} variation${vars>1?"s":""}</small></dd></div>
+    <div><dt>Effective library</dt><dd>${(posts*vars).toLocaleString()}<small>unique publishes</small></dd></div>
+    <div><dt>To reach ${target} weeks</dt><dd>${needPosts>0?"+"+needPosts:"✓"}<small>${needPosts>0?`more posts, or ${needVars} variations each`:"already there"}</small></dd></div>`;
+}
+
+/* ═══ Checklists ═══ */
+const SETUP = [
+  { id:"s1", t:"Create Heyward CPA — Evergreen", s:"Tax tips, financial literacy, business finance. The backbone of the presence.", tag:"ever" },
+  { id:"s2", t:"Create BYOBookkeeper — Evergreen", s:"Bookkeeping education, BYOB philosophy, service positioning.", tag:"ever" },
+  { id:"s3", t:"Create Financial Flipside — Evergreen", s:"Newsletter content, financial mindset, money culture.", tag:"ever" },
+  { id:"s4", t:"Create HCPA Live — Share Once", s:"Episode announcements, promos, post-show recaps. Never recycles.", tag:"once" },
+  { id:"s5", t:"Create Promotional — Share Once", s:"Workshop announcements, consultation CTAs, dated offers.", tag:"once" },
+  { id:"s6", t:"Create one Share Once category per Marblism campaign", s:"Named for the campaign, archived when it ends. Never one shared campaign bucket.", tag:"once" },
+  { id:"s7", t:"Check re-queue on every category before adding posts", s:"Default Settings → Re-queue after posting. ON for the three evergreen, OFF for the rest." },
+  { id:"s8", t:"Set the category shortlink and UTM parameters", s:"Category-level UTMs mean the Xero, RelayFi, ADP and Anchor affiliate clicks land attributable in analytics instead of arriving as direct traffic." },
+  { id:"s9", t:"Point the RSS feeds at the right categories", s:"heywardcpa.com blog into Heyward CPA, Substack into Financial Flipside. New articles then post themselves." },
+  { id:"s10", t:"Build each evergreen category to 30 posts before switching it on", s:"An empty loop posts the same handful over and over, which is worse than not posting." },
+  { id:"s11", t:"Assign every schedule slot to a category", s:"An unassigned slot silently publishes nothing." }
+];
+
+const CAMPAIGN = [
+  { id:"c1", t:"Export the campaign posts from Marblism" },
+  { id:"c2", t:"Create a Share Once category named for this campaign", s:"Confirm re-queue is OFF before a single post goes in." },
+  { id:"c3", t:"Import the posts", s:"CSV for a big batch, paste by hand for a handful." },
+  { id:"c4", t:"Give the campaign its own time slots", s:"Different times from the evergreen slots, so the two run alongside each other rather than competing." },
+  { id:"c5", t:"Set expiry dates on anything time-bound", s:"A workshop post that outlives the workshop is worse than no post." },
+  { id:"c6", t:"Approve every post in the category", s:"Drafts sit there quietly and never publish." },
+  { id:"c7", t:"Check the calendar for the first week", s:"Confirms the campaign is layering on rather than displacing." },
+  { id:"c8", t:"Archive the category once the campaign ends" },
+  { id:"c9", t:"Pull the winners into the evergreen loop", s:"Any campaign post that beat the evergreen average is a candidate for permanent rotation." }
+];
+
+function renderChecks(items, host, prefix){
+  document.getElementById(host).innerHTML = items.map(i=>{
+    const done = !!state[prefix+i.id];
+    return `<button class="check" data-done="${done}" data-key="${prefix+i.id}">
+      <span class="tick">${done?"✓":""}</span>
+      <span class="check-main">${i.t}${i.s?`<span class="check-sub">${i.s}</span>`:""}</span>
+      ${i.tag?`<span class="tag ${i.tag}">${i.tag==="ever"?"Re-queue on":"Re-queue off"}</span>`:"<span></span>"}
+    </button>`;
+  }).join("");
+}
+
+document.addEventListener("click", e=>{
+  const row = e.target.closest(".check");
+  if(!row) return;
+  const k = row.dataset.key;
+  state[k] = !state[k];
+  save();
+  renderChecks(SETUP,"setup-list","");
+  renderChecks(CAMPAIGN,"camp-list","");
+});
+
+document.getElementById("camp-reset").addEventListener("click", ()=>{
+  CAMPAIGN.forEach(i=>delete state[i.id]);
+  save();
+  renderChecks(CAMPAIGN,"camp-list","");
+});
+
+/* ═══ CSV ═══ */
+const CSV_COLS = ["text","link","imageUrls","gifUrls","videoUrls","postAtSpecificTime"];
+
+/* SocialBee requires yyyy-mm-ddThh:mm:ssZ, 24-hour. Past dates fail on import. */
+function stamp(dateStr, timeStr, addDays){
+  const [y,m,d] = (dateStr||"").split("-").map(Number);
+  const [hh,mm] = (timeStr||"12:00").split(":").map(Number);
+  if(!y) return "";
+  const dt = new Date(Date.UTC(y, m-1, d + addDays, hh, mm, 0));
+  return dt.toISOString().replace(/\.\d{3}Z$/,"Z");
+}
+
+function csvText(){
+  const start = document.getElementById("csv-start").value;
+  const time  = document.getElementById("csv-time").value || "12:00";
+  const n     = Math.min(300, Math.max(1, +document.getElementById("csv-rows").value || 1));
+  const q = s => `"${String(s).replace(/"/g,'""')}"`;
+
+  const rows = [CSV_COLS.join(",")];
+  rows.push([
+    q("First campaign post. Commas are fine inside the quotes."),
+    q("https://financialflipside.com"), "", "", "", stamp(start,time,0)
+  ].join(","));
+  rows.push([
+    q("Second post, same arc. This one carries an image instead of a link."),
+    "", q("https://example.com/image.jpg"), "", "", stamp(start,time,1)
+  ].join(","));
+  for(let i=2;i<n;i++) rows.push(["","","","","",stamp(start,time,i)].join(","));
+  return rows.join("\n");
+}
+function drawCsv(){
+  document.getElementById("csv-prev").textContent = csvText().split("\n").slice(0,4).join("\n") + "\n…";
+}
+document.getElementById("csv-dl").addEventListener("click", ()=>{
+  const blob = new Blob([csvText()], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "socialbee-import.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* ═══ Caption adapter ═══ */
+const PLATFORMS = [
+  { name:"LinkedIn",  limit:3000,  tags:3,  links:true  },
+  { name:"Facebook",  limit:63206, tags:3,  links:true  },
+  { name:"Instagram", limit:2200,  tags:10, links:false },
+  { name:"X",         limit:280,   tags:2,  links:true  }
+];
+const URL_RE = /https?:\/\/[^\s]+/g;
+
+function adapt(){
+  const raw = document.getElementById("cap-in").value;
+  const host = document.getElementById("cap-out");
+  if(!raw.trim()){
+    host.innerHTML = `<p class="hint">Nothing to adapt yet.</p>`;
+    return;
+  }
+  host.innerHTML = PLATFORMS.map(p=>{
+    let body = raw;
+    const notes = [];
+
+    if(!p.links){
+      const found = body.match(URL_RE);
+      if(found){
+        body = body.replace(URL_RE,"").replace(/[ \t]{2,}/g," ").trim();
+        body += "\n\nLink in bio.";
+        notes.push(`${found.length} link${found.length>1?"s":""} removed — Instagram captions aren't clickable.`);
+      }
+    }
+
+    const tags = body.match(/#[\w]+/g) || [];
+    if(tags.length > p.tags){
+      const keep = tags.slice(0, p.tags);
+      body = body.replace(/#[\w]+/g, m => keep.includes(m) ? m : "").replace(/[ \t]{2,}/g," ").replace(/\n{3,}/g,"\n\n").trim();
+      notes.push(`Trimmed ${tags.length} hashtags to ${p.tags}.`);
+    } else if(tags.length < p.tags && p.name === "Instagram"){
+      notes.push(`Only ${tags.length} hashtags — Instagram carries up to ${p.tags} comfortably.`);
+    }
+
+    const over = body.length > p.limit;
+    if(over) notes.push(`Over by ${body.length - p.limit} characters. Cut before posting.`);
+
+    return `<div class="out">
+      <div class="out-head">
+        <span class="out-name">${p.name}</span>
+        <span class="out-meta${over?" over":""}">${body.length.toLocaleString()} / ${p.limit.toLocaleString()}</span>
+      </div>
+      <div class="out-body">${body.replace(/[<>&]/g, ch=>({ "<":"&lt;", ">":"&gt;", "&":"&amp;" }[ch]))}</div>
+      ${notes.length?`<p class="out-flag">${notes.join(" ")}</p>`:""}
+    </div>`;
+  }).join("");
+}
+
+/* ═══ Reference accordion ═══ */
+function renderRef(){
+  document.getElementById("ref-list").innerHTML = REFERENCE.map((s,i)=>{
+    const open = !!state["ref_"+s.id];
+    return `<div class="ref-item">
+      <button class="ref-btn" data-ref="${s.id}" aria-expanded="${open}">
+        <h3>${s.title}</h3><span class="caret">${open?"Close":"Open"}</span>
+      </button>
+      ${open?`<div class="ref-body">${fmt(s.content)}</div>`:""}
+    </div>`;
+  }).join("");
+}
+
+function fmt(text){
+  const esc = t => t.replace(/[<>&]/g, ch=>({ "<":"&lt;", ">":"&gt;", "&":"&amp;" }[ch]));
+  return text.split("\n\n").map(block=>{
+    const lines = block.split("\n");
+    const first = lines[0];
+    const isSub = first === first.toUpperCase() && first.length > 3 && !first.startsWith(" ") && first.endsWith(":");
+    const rest = (isSub ? lines.slice(1) : lines).map(l=>{
+      if(!l.trim()) return "";
+      if(/^\s{2,}/.test(l)) return `<p class="ind">${esc(l.trim())}</p>`;
+      const strong = l.includes("→") || l.startsWith("IMPORTANT") || l.startsWith("Option");
+      return `<p${strong?' class="strong"':""}>${esc(l)}</p>`;
+    }).join("");
+    return isSub ? `<p class="sub">${esc(first.replace(/:$/,""))}</p>${rest}` : rest;
+  }).join("");
+}
+
+document.addEventListener("click", e=>{
+  const b = e.target.closest(".ref-btn");
+  if(!b) return;
+  const k = "ref_" + b.dataset.ref;
+  state[k] = !state[k];
+  save();
+  renderRef();
+});
+
+/* ═══ Nav ═══ */
+const SECTIONS = [
+  ["health","Library health"],["schedule","Schedule"],["setup","Setup"],
+  ["campaign","Campaigns"],["csv","CSV import"],["caption","Captions"],["reference","Reference"]
+];
+document.getElementById("nav").innerHTML = SECTIONS.map(([id,label],i)=>
+  `<button data-go="${id}" aria-current="${i===0}">${label}</button>`).join("");
+
+document.getElementById("nav").addEventListener("click", e=>{
+  const b = e.target.closest("[data-go]");
+  if(!b) return;
+  document.getElementById(b.dataset.go).scrollIntoView({ behavior:"smooth", block:"start" });
+});
+
+const spy = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      document.querySelectorAll("#nav button").forEach(b=>
+        b.setAttribute("aria-current", b.dataset.go === en.target.id));
+    }
+  });
+}, { rootMargin:"-20% 0px -70% 0px" });
+SECTIONS.forEach(([id])=>spy.observe(document.getElementById(id)));
+
+/* ═══ Wiring ═══ */
+["c-posts","c-vars","c-slots","c-target"].forEach(id=>
+  document.getElementById(id).addEventListener("input", calc));
+
+document.getElementById("c-cat").addEventListener("change", e=>{
+  const n = slotsFor(e.target.value);
+  if(n) document.getElementById("c-slots").value = n;
+  calc();
+});
+
+document.getElementById("camp-on").addEventListener("change", drawSchedule);
+["csv-start","csv-time","csv-rows"].forEach(id=>
+  document.getElementById(id).addEventListener("input", drawCsv));
+document.getElementById("cap-in").addEventListener("input", adapt);
+
+/* ═══ Boot ═══ */
+(() => {
+  const t = new Date(); t.setDate(t.getDate()+1);
+  document.getElementById("csv-start").value = t.toISOString().slice(0,10);
+})();
+drawSchedule();
+document.getElementById("c-slots").value = slotsFor(document.getElementById("c-cat").value) || 7;
+calc();
+renderChecks(SETUP,"setup-list","");
+renderChecks(CAMPAIGN,"camp-list","");
+drawCsv();
+adapt();
+renderRef();
+</script>
+</body>
+</html>
